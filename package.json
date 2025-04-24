@@ -13,7 +13,7 @@
     "dev": "next dev --turbo",
     "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,mdx}\" --cache",
     "format:write": "prettier --write \"**/*.{ts,tsx,js,jsx,mdx}\" --cache",
-    "postinstall": "prisma generate",
+    "postinstall": "prisma generate && next lint --fix",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
     "preview": "next build && next start",
@@ -67,7 +67,8 @@
     "tailwindcss": "^4.0.15",
     "tw-animate-css": "^1.2.8",
     "typescript": "^5.8.2",
-    "typescript-eslint": "^8.27.0"
+    "typescript-eslint": "^8.27.0",
+    "zod-prisma-types": "^3.2.4"
   },
   "ct3aMetadata": {
     "initVersion": "7.39.3"
