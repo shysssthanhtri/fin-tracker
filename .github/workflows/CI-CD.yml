@@ -17,6 +17,7 @@ jobs:
         GOOGLE_CLIENT_ID: "mock"
         GOOGLE_CLIENT_SECRET: "mock"
         NODE_ENV: "production"
+        AUTH_SECRET: "mock"
 
     steps:
       - name: Checkout code
