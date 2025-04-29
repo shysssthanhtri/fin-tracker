@@ -22,7 +22,7 @@ export const Sidebar = async (
   return (
     <ShadcnSidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
-        <TeamSwitcher teams={[{ name: "Personal" }, { name: "Family" }]} />
+        <TeamSwitcher />
       </SidebarHeader>
       <SidebarContent>
         <NavMain />

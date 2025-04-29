@@ -1,6 +1,7 @@
 "use client";
 
 import { ChevronsUpDown, Plus } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
 import * as React from "react";
 
 import {
@@ -9,7 +10,6 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -18,20 +18,27 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { Query, Routes } from "@/config/routes";
+import type { TTeamEntity } from "@/entities/team.entity";
+import { api } from "@/trpc/react";
 
-export function TeamSwitcher({
-  teams,
-}: {
-  teams: {
-    name: string;
-  }[];
-}) {
+export function TeamSwitcher() {
   const { isMobile } = useSidebar();
-  const [activeTeam, setActiveTeam] = React.useState(teams[0]);
+  const router = useRouter();
+  const { data: teams = [], isLoading } = api.team.get.useQuery();
+  const searchParams = useSearchParams();
 
-  if (!activeTeam) {
-    return null;
-  }
+  const activeTeamId = searchParams.get(Query.teamId);
+  const activeTeam = teams?.find((team) => team.id === activeTeamId);
+
+  const setActiveTeam = React.useCallback(
+    (newActiveTeamId: TTeamEntity["id"]) => {
+      router.push(Routes.input(newActiveTeamId));
+    },
+    [router],
+  );
+
+  if (!activeTeam && !isLoading) return null;
 
   return (
     <SidebarMenu>
@@ -41,10 +48,12 @@ export function TeamSwitcher({
             <SidebarMenuButton
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              disabled={isLoading}
             >
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">
-                  {activeTeam.name}
+                  {!!activeTeam && activeTeam.name}
+                  {!!isLoading && "Loading"}
                 </span>
               </div>
               <ChevronsUpDown className="ml-auto" />
@@ -59,14 +68,13 @@ export function TeamSwitcher({
             <DropdownMenuLabel className="text-muted-foreground text-xs">
               Teams
             </DropdownMenuLabel>
-            {teams.map((team, index) => (
+            {teams.map((team) => (
               <DropdownMenuItem
                 key={team.name}
-                onClick={() => setActiveTeam(team)}
+                onClick={() => setActiveTeam(team.id)}
                 className="gap-2 p-2"
               >
                 {team.name}
-                <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
               </DropdownMenuItem>
             ))}
             <DropdownMenuSeparator />

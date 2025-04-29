@@ -11,7 +11,7 @@ import { UserWithRelationsSchema } from "./UserSchema";
 
 export const TeamSchema = z.object({
   id: z.string(),
-  name: z.string().nullish(),
+  name: z.string(),
   createdAt: z.date(),
   updatedAt: z.date(),
   createdById: z.string(),

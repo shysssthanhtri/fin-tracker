@@ -1,5 +1,9 @@
 import type { TTeamEntity } from "@/entities/team.entity";
 
+export const Query = {
+  teamId: "team-id",
+} as const;
+
 export const Routes = {
   auth: {
     signout: "/api/auth/signout",
@@ -9,6 +13,6 @@ export const Routes = {
     setting: "/setting",
     account: "/account",
   },
-  input: (teamId: TTeamEntity["id"]) => `/?team-id=${teamId}`,
+  input: (teamId: TTeamEntity["id"]) => `/?${Query.teamId}=${teamId}`,
   notification: "/notification",
 } as const;
