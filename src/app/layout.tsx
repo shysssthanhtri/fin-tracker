@@ -2,8 +2,11 @@ import "@/styles/globals.css";
 
 import { type Metadata } from "next";
 import { Geist } from "next/font/google";
+import { redirect } from "next/navigation";
 
 import { Layout } from "@/app/_components/layout";
+import { Routes } from "@/config/routes";
+import { auth } from "@/server/auth";
 import { TRPCReactProvider } from "@/trpc/react";
 
 export const metadata: Metadata = {
@@ -17,9 +20,14 @@ const geist = Geist({
   variable: "--font-geist-sans",
 });
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const isAuth = !!(await auth());
+  if (!isAuth) {
+    redirect(Routes.auth.signin);
+  }
+
   return (
     <html lang="en" className={`${geist.variable}`}>
       <body>

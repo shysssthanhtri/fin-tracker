@@ -7,7 +7,7 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 interface Props {
   children: React.ReactNode;
 }
-export const Layout = ({ children }: Props) => {
+export const Layout = async ({ children }: Props) => {
   return (
     <SidebarProvider>
       <Sidebar />
