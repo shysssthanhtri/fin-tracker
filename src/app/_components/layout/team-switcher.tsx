@@ -1,7 +1,6 @@
 "use client";
 
 import { ChevronsUpDown, Plus } from "lucide-react";
-import { useRouter, useSearchParams } from "next/navigation";
 import * as React from "react";
 
 import {
@@ -31,18 +30,15 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { Query, Routes } from "@/config/routes";
 import type { TTeamEntity } from "@/entities/team.entity";
 import { api } from "@/trpc/react";
 
 export function TeamSwitcher() {
   const ref = React.useRef<TeamFormRef>(null);
   const { isMobile } = useSidebar();
-  const router = useRouter();
   const { data: teams = [], isLoading } = api.team.get.useQuery();
-  const searchParams = useSearchParams();
 
-  const activeTeamId = searchParams.get(Query.teamId);
+  const activeTeamId = teams[0]?.id;
   const activeTeam = teams?.find((team) => team.id === activeTeamId);
 
   const [isCreateTeamDialogOpen, setIsCreateTeamDialogOpen] =
@@ -50,9 +46,9 @@ export function TeamSwitcher() {
 
   const setActiveTeam = React.useCallback(
     (newActiveTeamId: TTeamEntity["id"]) => {
-      router.push(Routes.input(newActiveTeamId));
+      console.log({ newActiveTeamId });
     },
-    [router],
+    [],
   );
 
   const utils = api.useUtils();

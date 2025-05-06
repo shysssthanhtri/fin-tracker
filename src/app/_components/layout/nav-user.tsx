@@ -80,13 +80,13 @@ export const NavUser = ({ user }: Props) => {
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem>
-                <LinkWithIcon href={Routes.setting.account}>
+                <LinkWithIcon href={Routes.personal.profile}>
                   <UserCircleIcon />
-                  Account
+                  Profile
                 </LinkWithIcon>
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <LinkWithIcon href={Routes.notification}>
+                <LinkWithIcon href={Routes.personal.notification}>
                   <BellIcon />
                   Notifications
                 </LinkWithIcon>
