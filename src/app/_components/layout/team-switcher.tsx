@@ -4,7 +4,11 @@ import { ChevronsUpDown, Plus } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import * as React from "react";
 
-import { Button } from "@/components/ui/button";
+import {
+  TeamForm,
+  type TeamFormRef,
+} from "@/app/_components/layout/forms/team-form";
+import { ButtonLoading } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -32,6 +36,7 @@ import type { TTeamEntity } from "@/entities/team.entity";
 import { api } from "@/trpc/react";
 
 export function TeamSwitcher() {
+  const ref = React.useRef<TeamFormRef>(null);
   const { isMobile } = useSidebar();
   const router = useRouter();
   const { data: teams = [], isLoading } = api.team.get.useQuery();
@@ -49,6 +54,15 @@ export function TeamSwitcher() {
     },
     [router],
   );
+
+  const utils = api.useUtils();
+  const { mutate, isPending } = api.team.create.useMutation({
+    onSuccess: async () => {
+      ref.current?.reset();
+      void utils.team.invalidate();
+      setIsCreateTeamDialogOpen(false);
+    },
+  });
 
   if (!activeTeam && !isLoading) return null;
 
@@ -104,14 +118,22 @@ export function TeamSwitcher() {
   const dialogContent = (
     <DialogContent>
       <DialogHeader>
-        <DialogTitle>Are you absolutely sure?</DialogTitle>
+        <DialogTitle>Create new team</DialogTitle>
         <DialogDescription>
-          This action cannot be undone. Are you sure you want to permanently
-          delete this file from our servers?
+          You can also add another users to your team.
         </DialogDescription>
       </DialogHeader>
+      <TeamForm ref={ref} onSubmit={mutate} />
       <DialogFooter>
-        <Button type="submit">Confirm</Button>
+        <ButtonLoading
+          type="submit"
+          onClick={() => {
+            ref.current?.submit();
+          }}
+          isLoading={isPending}
+        >
+          Create
+        </ButtonLoading>
       </DialogFooter>
     </DialogContent>
   );
