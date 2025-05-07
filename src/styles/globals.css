@@ -133,6 +133,6 @@ body {
 div#__next {
   @apply h-full;
 }
-main {
+/* main {
   @apply h-full;
-}
+} */
