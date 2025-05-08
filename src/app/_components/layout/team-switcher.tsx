@@ -6,7 +6,7 @@ import * as React from "react";
 import {
   TeamForm,
   type TeamFormRef,
-} from "@/app/_components/layout/forms/team-form";
+} from "@/app/(team)/_components/forms/team-form";
 import { ButtonLoading } from "@/components/ui/button";
 import {
   Dialog,
