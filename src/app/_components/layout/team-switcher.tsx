@@ -3,10 +3,7 @@
 import { ChevronsUpDown, Plus } from "lucide-react";
 import * as React from "react";
 
-import {
-  TeamForm,
-  type TeamFormRef,
-} from "@/app/(team)/_components/forms/team-form";
+import { TeamForm, type TeamFormRef } from "@/app/(team)/_forms/team-form";
 import { ButtonLoading } from "@/components/ui/button";
 import {
   Dialog,

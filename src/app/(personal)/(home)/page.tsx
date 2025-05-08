@@ -5,11 +5,13 @@ import React, { useState } from "react";
 
 import { TeamList } from "@/app/(personal)/(home)/_components/team-list";
 import { CreateTeamDialog } from "@/app/(team)/_components/create-team-dialog";
+import { useTeam } from "@/app/(team)/_hooks/use-team";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const PersonalPage = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const { create, isCreating } = useTeam();
 
   return (
     <>
@@ -27,7 +29,12 @@ const PersonalPage = () => {
           </CardContent>
         </Card>
       </div>
-      <CreateTeamDialog open={isDialogOpen} onOpenChange={setIsDialogOpen} />
+      <CreateTeamDialog
+        open={isDialogOpen}
+        onOpenChange={setIsDialogOpen}
+        createTeam={create}
+        isLoading={isCreating}
+      />
     </>
   );
 };

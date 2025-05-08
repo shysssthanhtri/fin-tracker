@@ -3,7 +3,11 @@
 import type { DialogProps } from "@radix-ui/react-dialog";
 import React from "react";
 
-import { TeamForm } from "@/app/(team)/_components/forms/team-form";
+import {
+  TeamForm,
+  type TeamFormRef,
+  type TeamFormSchema,
+} from "@/app/(team)/_forms/team-form";
 import { ButtonLoading } from "@/components/ui/button";
 import {
   Dialog,
@@ -14,9 +18,17 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 
-type Props = React.ComponentProps<React.FC<DialogProps>>;
+interface Props extends React.ComponentProps<React.FC<DialogProps>> {
+  createTeam?: (team: TeamFormSchema) => void;
+  isLoading?: boolean;
+}
 
-export const CreateTeamDialog = (props: Props) => {
+export const CreateTeamDialog = ({
+  createTeam,
+  isLoading,
+  ...props
+}: Props) => {
+  const ref = React.useRef<TeamFormRef>(null);
   return (
     <Dialog {...props}>
       <DialogContent>
@@ -26,9 +38,17 @@ export const CreateTeamDialog = (props: Props) => {
             You can also add another users to your team.
           </DialogDescription>
         </DialogHeader>
-        <TeamForm />
+        <TeamForm ref={ref} onSubmit={createTeam} />
         <DialogFooter>
-          <ButtonLoading type="submit">Create</ButtonLoading>
+          <ButtonLoading
+            type="submit"
+            onClick={() => {
+              ref.current?.submit();
+            }}
+            isLoading={isLoading}
+          >
+            Create
+          </ButtonLoading>
         </DialogFooter>
       </DialogContent>
     </Dialog>

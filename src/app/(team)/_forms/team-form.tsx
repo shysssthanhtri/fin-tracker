@@ -16,7 +16,7 @@ import { teamEntity } from "@/entities/team.entity";
 
 interface Props {
   isLoading?: boolean;
-  onSubmit?: (value: FormSchema) => void;
+  onSubmit?: (value: TeamFormSchema) => void;
 }
 export type TeamFormRef = {
   submit: () => void;
@@ -26,7 +26,7 @@ export type TeamFormRef = {
 export const TeamForm = forwardRef<TeamFormRef, Props>((props, ref) => {
   const { onSubmit, isLoading } = props;
 
-  const form = useForm<FormSchema>({
+  const form = useForm<TeamFormSchema>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
@@ -34,7 +34,7 @@ export const TeamForm = forwardRef<TeamFormRef, Props>((props, ref) => {
   });
 
   const handleSubmit = useCallback(
-    (value: FormSchema) => {
+    (value: TeamFormSchema) => {
       onSubmit?.(value);
     },
     [onSubmit],
@@ -82,4 +82,4 @@ TeamForm.displayName = "TeamForm";
 const formSchema = teamEntity.pick({
   name: true,
 });
-type FormSchema = z.infer<typeof formSchema>;
+export type TeamFormSchema = z.infer<typeof formSchema>;

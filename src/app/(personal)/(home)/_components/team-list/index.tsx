@@ -4,13 +4,13 @@ import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import React, { useMemo } from "react";
 
+import { useTeam } from "@/app/(team)/_hooks/use-team";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Routes } from "@/config/routes";
-import { api } from "@/trpc/react";
 
 export const TeamList = () => {
-  const { data: teams = [], isLoading } = api.team.get.useQuery();
+  const { teams, isLoading } = useTeam();
 
   const skeletons = useMemo(
     () => (
