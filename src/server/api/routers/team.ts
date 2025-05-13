@@ -13,6 +13,11 @@ export const teamRouter = createTRPCRouter({
           },
         },
       },
+      include: {
+        members: {
+          where: { userId: ctx.session.user.id },
+        },
+      },
       orderBy: {
         createdAt: "desc",
       },
