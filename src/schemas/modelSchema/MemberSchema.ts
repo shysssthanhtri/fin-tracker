@@ -14,6 +14,7 @@ export const MemberSchema = z.object({
   role: MemberRoleSchema,
   teamId: z.string(),
   userId: z.string(),
+  isFavorite: z.boolean(),
 });
 
 export type Member = z.infer<typeof MemberSchema>;

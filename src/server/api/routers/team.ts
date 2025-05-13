@@ -1,6 +1,7 @@
 import { MemberRole } from "@prisma/client";
 
 import { teamEntity } from "@/entities/team.entity";
+import MemberSchema from "@/schemas/modelSchema/MemberSchema";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 
 export const teamRouter = createTRPCRouter({
@@ -13,13 +14,24 @@ export const teamRouter = createTRPCRouter({
           },
         },
       },
-      include: {
-        members: {
-          where: { userId: ctx.session.user.id },
-        },
-      },
       orderBy: {
         createdAt: "desc",
+      },
+    });
+  }),
+
+  getWithMember: protectedProcedure.query(({ ctx }) => {
+    return ctx.db.member.findMany({
+      where: {
+        userId: ctx.session.user.id,
+      },
+      include: {
+        team: true,
+      },
+      orderBy: {
+        team: {
+          createdAt: "desc",
+        },
       },
     });
   }),
@@ -41,6 +53,27 @@ export const teamRouter = createTRPCRouter({
               role: MemberRole.EDITOR,
             },
           },
+        },
+      });
+    }),
+
+  markFavoriteTeam: protectedProcedure
+    .input(
+      MemberSchema.pick({
+        teamId: true,
+        isFavorite: true,
+      }),
+    )
+    .mutation(({ ctx, input }) => {
+      return ctx.db.member.update({
+        where: {
+          teamId_userId: {
+            teamId: input.teamId,
+            userId: ctx.session.user.id,
+          },
+        },
+        data: {
+          isFavorite: input.isFavorite,
         },
       });
     }),

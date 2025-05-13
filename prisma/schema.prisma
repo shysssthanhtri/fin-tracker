@@ -121,7 +121,8 @@ model Member {
     userId String
     user   User   @relation(fields: [userId], references: [id])
 
-    role MemberRole
+    role       MemberRole
+    isFavorite Boolean    @default(false) @map("is_favorite")
 
     @@id([teamId, userId])
 }

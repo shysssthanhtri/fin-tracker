@@ -1,11 +1,13 @@
+"use client";
+
 import React from "react";
 
 import { TeamTable } from "@/app/(personal)/profile/_components/teams-section/team-table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { api } from "@/trpc/server";
+import { api } from "@/trpc/react";
 
-export const TeamsSection = async () => {
-  const teams = await api.team.get();
+export const TeamsSection = () => {
+  const { data: teams = [] } = api.team.getWithMember.useQuery();
   return (
     <Card>
       <CardHeader>
@@ -15,7 +17,7 @@ export const TeamsSection = async () => {
         <TeamTable
           teams={teams.map((team) => ({
             ...team,
-            roles: team.members.map((member) => member.role),
+            ...team.team,
           }))}
         />
       </CardContent>
