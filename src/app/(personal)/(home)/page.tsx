@@ -11,7 +11,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const PersonalPage = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const { create, isCreating } = useTeam();
+  const { create, isCreating, teams, isLoading } = useTeam();
+  const [selectedTeamId, setSelectedTeamId] =
+    useState<(typeof teams)[0]["id"]>();
 
   return (
     <>
@@ -21,8 +23,13 @@ const PersonalPage = () => {
             <CardTitle>Choose your team to start to input</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <TeamList />
-            <Button className="w-full" onClick={() => setIsDialogOpen(true)}>
+            <TeamList
+              teams={teams}
+              isLoading={isLoading}
+              selectedTeamId={selectedTeamId}
+              onSelectTeamId={setSelectedTeamId}
+            />
+            <Button onClick={() => setIsDialogOpen(true)} className="w-full">
               Or create new team
               <PlusCircle />
             </Button>
