@@ -18,7 +18,7 @@ const PersonalPage = () => {
       <div className="flex h-full items-center justify-center">
         <Card className="w-1/2">
           <CardHeader>
-            <CardTitle>Choose your team to start input</CardTitle>
+            <CardTitle>Choose your team to start to input</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <TeamList />
@@ -32,7 +32,13 @@ const PersonalPage = () => {
       <CreateTeamDialog
         open={isDialogOpen}
         onOpenChange={setIsDialogOpen}
-        createTeam={create}
+        createTeam={(team) =>
+          create(team, {
+            onSuccess: () => {
+              setIsDialogOpen(false);
+            },
+          })
+        }
         isLoading={isCreating}
       />
     </>

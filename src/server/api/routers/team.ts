@@ -13,6 +13,9 @@ export const teamRouter = createTRPCRouter({
           },
         },
       },
+      orderBy: {
+        createdAt: "desc",
+      },
     });
   }),
 
