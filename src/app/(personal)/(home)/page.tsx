@@ -1,6 +1,7 @@
 "use client";
 
 import { PlusCircle } from "lucide-react";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
 import { TeamList } from "@/app/(personal)/(home)/_components/team-list";
@@ -14,6 +15,7 @@ const PersonalPage = () => {
   const { create, isCreating, teams, isLoading } = useTeam();
   const [selectedTeamId, setSelectedTeamId] =
     useState<(typeof teams)[0]["id"]>();
+  const router = useRouter();
 
   return (
     <>
@@ -41,8 +43,9 @@ const PersonalPage = () => {
         onOpenChange={setIsDialogOpen}
         createTeam={(team) =>
           create(team, {
-            onSuccess: () => {
+            onSuccess: (createdTeam) => {
               setIsDialogOpen(false);
+              router.push(createdTeam.id);
             },
           })
         }
