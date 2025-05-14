@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { api } from "@/trpc/server";
 
 const PersonalPage = async () => {
-  const teams = await api.team.get();
+  const teams = await api.team.getWithMember();
 
   return (
     <div className="flex h-full items-center justify-center">
@@ -15,7 +15,12 @@ const PersonalPage = async () => {
           <CardTitle>Choose your team to start to input</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <TeamList teams={teams} />
+          <TeamList
+            teams={teams.map((team) => ({
+              ...team,
+              ...team.team,
+            }))}
+          />
           <CreateTeamButton />
         </CardContent>
       </Card>

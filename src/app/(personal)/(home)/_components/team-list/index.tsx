@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Star } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 
@@ -9,7 +9,7 @@ import { Routes } from "@/config/routes";
 import type { TTeamEntity } from "@/entities/team.entity";
 
 interface Props {
-  teams: TTeamEntity[];
+  teams: (TTeamEntity & { isFavorite: boolean })[];
 }
 export const TeamList = ({ teams }: Props) => {
   return (
@@ -19,6 +19,7 @@ export const TeamList = ({ teams }: Props) => {
           <Link href={Routes.team.input(team.id)} className="w-full">
             <Button variant="outline" className="w-full">
               {team.name}
+              {team.isFavorite && <Star className="text-yellow-400" />}
               <ArrowRight />
             </Button>
           </Link>

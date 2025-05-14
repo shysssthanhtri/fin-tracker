@@ -28,11 +28,16 @@ export const teamRouter = createTRPCRouter({
       include: {
         team: true,
       },
-      orderBy: {
-        team: {
-          createdAt: "desc",
+      orderBy: [
+        {
+          isFavorite: "desc",
         },
-      },
+        {
+          team: {
+            createdAt: "desc",
+          },
+        },
+      ],
     });
   }),
 
