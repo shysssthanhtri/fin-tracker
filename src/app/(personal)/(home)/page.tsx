@@ -1,57 +1,25 @@
-"use client";
+import React from "react";
 
-import { PlusCircle } from "lucide-react";
-import { useRouter } from "next/navigation";
-import React, { useState } from "react";
-
+import { CreateTeamButton } from "@/app/(personal)/(home)/_components/create-team-button";
 import { TeamList } from "@/app/(personal)/(home)/_components/team-list";
-import { CreateTeamDialog } from "@/app/(team)/_components/create-team-dialog";
-import { useTeam } from "@/app/(team)/_hooks/use-team";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { api } from "@/trpc/server";
 
-const PersonalPage = () => {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const { create, isCreating, teams, isLoading } = useTeam();
-  const [selectedTeamId, setSelectedTeamId] =
-    useState<(typeof teams)[0]["id"]>();
-  const router = useRouter();
+const PersonalPage = async () => {
+  const teams = await api.team.get();
 
   return (
-    <>
-      <div className="flex h-full items-center justify-center">
-        <Card className="w-1/2">
-          <CardHeader>
-            <CardTitle>Choose your team to start to input</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <TeamList
-              teams={teams}
-              isLoading={isLoading}
-              selectedTeamId={selectedTeamId}
-              onSelectTeamId={setSelectedTeamId}
-            />
-            <Button onClick={() => setIsDialogOpen(true)} className="w-full">
-              Or create new team
-              <PlusCircle />
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-      <CreateTeamDialog
-        open={isDialogOpen}
-        onOpenChange={setIsDialogOpen}
-        createTeam={(team) =>
-          create(team, {
-            onSuccess: (createdTeam) => {
-              setIsDialogOpen(false);
-              router.push(createdTeam.id);
-            },
-          })
-        }
-        isLoading={isCreating}
-      />
-    </>
+    <div className="flex h-full items-center justify-center">
+      <Card className="w-1/2">
+        <CardHeader>
+          <CardTitle>Choose your team to start to input</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <TeamList teams={teams} />
+          <CreateTeamButton />
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 
