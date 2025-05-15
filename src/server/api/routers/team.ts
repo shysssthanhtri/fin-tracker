@@ -1,7 +1,7 @@
 import { MemberRole } from "@prisma/client";
+import { z } from "zod";
 
-import { teamEntity } from "@/entities/team.entity";
-import MemberSchema from "@/schemas/modelSchema/MemberSchema";
+import { memberTeamEntity, teamEntity } from "@/entities/team.entity";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 
 export const teamRouter = createTRPCRouter({
@@ -62,24 +62,33 @@ export const teamRouter = createTRPCRouter({
       });
     }),
 
-  markFavoriteTeam: protectedProcedure
+  saveFavoriteTeams: protectedProcedure
     .input(
-      MemberSchema.pick({
-        teamId: true,
-        isFavorite: true,
-      }),
+      z.array(
+        memberTeamEntity.pick({
+          id: true,
+          isFavorite: true,
+        }),
+      ),
     )
     .mutation(({ ctx, input }) => {
-      return ctx.db.member.update({
-        where: {
-          teamId_userId: {
-            teamId: input.teamId,
-            userId: ctx.session.user.id,
-          },
-        },
-        data: {
-          isFavorite: input.isFavorite,
-        },
+      const teams = input;
+      return ctx.db.$transaction(async (tx) => {
+        return Promise.all(
+          teams.map((team) =>
+            tx.member.update({
+              where: {
+                teamId_userId: {
+                  teamId: team.id,
+                  userId: ctx.session.user.id,
+                },
+              },
+              data: {
+                isFavorite: team.isFavorite,
+              },
+            }),
+          ),
+        );
       });
     }),
 });

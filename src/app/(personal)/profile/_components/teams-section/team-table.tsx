@@ -1,7 +1,14 @@
 "use client";
 
-import type { MemberRole } from "@prisma/client";
-import React from "react";
+import clone from "clone-deep";
+import React, {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useMemo,
+  useState,
+} from "react";
 
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -13,49 +20,82 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { TTeamEntity } from "@/entities/team.entity";
-import { api } from "@/trpc/react";
+import type { TMemberTeamEntity, TTeamEntity } from "@/entities/team.entity";
 
 interface Props {
-  teams: (TTeamEntity & {
-    role: MemberRole;
-    isFavorite: boolean;
-  })[];
+  teams: TMemberTeamEntity[];
+  onChange: (isChanged: boolean) => void;
 }
-export const TeamTable = ({ teams }: Props) => {
-  const utils = api.useUtils();
-  const { mutate, isPending } = api.team.markFavoriteTeam.useMutation({
-    onSuccess: async () => {
-      await utils.team.getWithMember.invalidate();
-    },
-  });
-
-  return (
-    <Table>
-      <TableCaption>Your joint teams.</TableCaption>
-      <TableHeader>
-        <TableRow>
-          <TableHead>Name</TableHead>
-          <TableHead>Roles</TableHead>
-          <TableHead>Marked</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {teams.map((team) => (
-          <TableRow key={team.id}>
-            <TableCell>{team.name}</TableCell>
-            <TableCell>{team.role}</TableCell>
-            <TableCell>
-              <Checkbox
-                checked={team.isFavorite}
-                onCheckedChange={() => {
-                  mutate({ teamId: team.id, isFavorite: !team.isFavorite });
-                }}
-              />
-            </TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
-  );
+export type TeamTableRef = {
+  reset: () => void;
+  getTeams: () => TMemberTeamEntity[];
 };
+export const TeamTable = forwardRef<TeamTableRef, Props>(
+  ({ teams: originalTeams, onChange }, ref) => {
+    const [teams, setTeams] = useState(clone(originalTeams));
+    const isChanged = useMemo(() => {
+      return JSON.stringify(teams) !== JSON.stringify(originalTeams);
+    }, [originalTeams, teams]);
+
+    const onToggleFavorite = useCallback(
+      (teamId: TTeamEntity["id"]) => {
+        const newTeams = teams.slice();
+        newTeams.forEach((t) => {
+          if (t.id === teamId) {
+            t.isFavorite = !t.isFavorite;
+          }
+        });
+        setTeams(newTeams);
+      },
+      [teams],
+    );
+
+    useEffect(() => {
+      onChange(isChanged);
+    }, [isChanged, onChange]);
+
+    const reset = useCallback(() => {
+      setTeams(clone(originalTeams));
+    }, [originalTeams]);
+
+    useImperativeHandle(
+      ref,
+      () => ({
+        reset: () => {
+          reset();
+        },
+        getTeams: () => teams,
+      }),
+      [reset, teams],
+    );
+
+    return (
+      <Table>
+        <TableCaption>Your joint teams.</TableCaption>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Name</TableHead>
+            <TableHead>Roles</TableHead>
+            <TableHead>Marked</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {teams.map((team) => (
+            <TableRow key={team.id}>
+              <TableCell>{team.name}</TableCell>
+              <TableCell>{team.role}</TableCell>
+              <TableCell>
+                <Checkbox
+                  checked={team.isFavorite}
+                  onCheckedChange={() => onToggleFavorite(team.id)}
+                />
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    );
+  },
+);
+
+TeamTable.displayName = "TeamTable";
