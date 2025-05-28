@@ -9,7 +9,7 @@ const PersonalLayout = ({
   return (
     <SidebarProvider>
       <PersonalSidebar />
-      <SidebarInset className="p-4">{children}</SidebarInset>
+      <SidebarInset>{children}</SidebarInset>
     </SidebarProvider>
   );
 };

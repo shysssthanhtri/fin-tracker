@@ -1,10 +1,8 @@
 import React from "react";
 
-import { NavMain } from "@/app/_components/layout/nav-main";
-import { NavUser } from "@/app/_components/layout/nav-user";
-import { TeamSwitcher } from "@/app/_components/layout/team-switcher";
+import { NavUser } from "@/app/_components/nav-user";
 import {
-  Sidebar as ShadcnSidebar,
+  Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
@@ -12,21 +10,17 @@ import {
 } from "@/components/ui/sidebar";
 import { auth } from "@/server/auth";
 
-export const Sidebar = async (
-  props: React.ComponentProps<typeof ShadcnSidebar>,
+export const TeamsSidebar = async (
+  props: React.ComponentProps<typeof Sidebar>,
 ) => {
   const session = await auth();
   const user = session?.user;
   if (!user) return null;
 
   return (
-    <ShadcnSidebar collapsible="offcanvas" {...props}>
-      <SidebarHeader>
-        <TeamSwitcher />
-      </SidebarHeader>
-      <SidebarContent>
-        <NavMain />
-      </SidebarContent>
+    <Sidebar collapsible="offcanvas" {...props}>
+      <SidebarHeader />
+      <SidebarContent />
       <SidebarFooter>
         <NavUser
           user={{
@@ -37,6 +31,6 @@ export const Sidebar = async (
         />
       </SidebarFooter>
       <SidebarRail />
-    </ShadcnSidebar>
+    </Sidebar>
   );
 };

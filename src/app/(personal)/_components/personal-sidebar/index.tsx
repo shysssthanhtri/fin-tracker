@@ -1,6 +1,6 @@
 import React from "react";
 
-import { NavUser } from "@/app/_components/layout/nav-user";
+import { NavUser } from "@/app/_components/nav-user";
 import {
   Sidebar,
   SidebarContent,
