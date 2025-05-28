@@ -76,7 +76,7 @@ export const TeamTable = forwardRef<TeamTableRef, Props>(
           <TableRow>
             <TableHead>Name</TableHead>
             <TableHead>Roles</TableHead>
-            <TableHead>Marked</TableHead>
+            <TableHead>Favorite</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
